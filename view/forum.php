@@ -6,9 +6,7 @@
                             $TopicC = new topicC();
                             $Topics = $TopicC->affichertopic();
                            
-                            require_once ('C:/xampp/htdocs/Forumm/view/PHP-MySQLi-Database-Class-master/MysqliDb.php');
-
-                            $db = new MysqliDb ('localhost', 'root', '', 'forum');
+                         
                             
 
 
@@ -38,9 +36,9 @@
     <!-- Responsive Style -->
     <link rel="stylesheet" type="text/css" href="assets/css/responsive.css">
     <!--<link rel="stylesheet"  href="event.css">-->
-
-
-
+  
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css" integrity="sha512-KfkfwYDsLkIlwQp6LFnl8zNdLGxu9YAA1QvwINks4PhcElQSvqcyVLLD9aMhXd13uQjoXtEKNosOWaZqXgel0g==" crossorigin="anonymous" referrerpolicy="no-referrer" />
 
 
     <!-- ===============================================-->
@@ -83,6 +81,9 @@
 	
 </form>
 <?php
+   require_once ('C:/xampp/htdocs/Forumm/view/PHP-MySQLi-Database-Class-master/MysqliDb.php');
+
+   $db = new MysqliDb ('localhost', 'root', '', 'forum');
 $topics = $db->get('topic');
 
 if (isset($_POST['like'])) {
@@ -92,6 +93,21 @@ if (isset($_POST['like'])) {
     $db->update('topic', $query);
 
     $db->insert('likes', Array('post_id'=>$post_id));
+
+}?>
+<?php
+   require_once ('C:/xampp/htdocs/Forumm/view/PHP-MySQLi-Database-Class-master/MysqliDb.php');
+
+   $db = new MysqliDb ('localhost', 'root', '', 'forum');
+$topics = $db->get('topic');
+
+if (isset($_POST['view'])) {
+    $post_id = $_POST['view'];
+    $query = Array('view_count'=>$db->inc(1));
+    $db->where('idview', $post_id);
+    $db->update('topic', $query);
+
+    $db->insert('views', Array('post_id'=>$post_id));
 
 }?>
 
@@ -179,15 +195,16 @@ if (isset($_POST["submit"])) {
                 
             <div class="subforum">
                 <div class="subforum-title">
-                    <h1><a href="comments.php?id=<?= $Topic['idtopic']; ?>">Topic <?php echo $Topic["titre"]  ?></a></h1>
+                    <h1><a href="comments.php?id=<?= $Topic['idtopic']; ?>">Topic <?php echo $Topic["titre"] .'&nbsp;<br><i class="fa-solid fa-eye" data-postid="'.$Topic['idtopic'].'" data-likes="'.$Topic['view_count'].'" class="view"> ('.$Topic['view_count'].')</i>';  ?></a></h1>
                 </div>
                 <div class="subforum-row">
                     <div class="subforum-icon subforum-column center">
                     <i class="fas fa-comment"></i>
                     </div>
                     <div class="subforum-description subforum-column">
-                        <h4><?= $Topic['descrip'].'&nbsp;<button data-postid="'.$Topic['idtopic'].'" data-likes="'.$Topic['like_count'].'" class="like">Like ('.$Topic['like_count'].')</button><hr />'; ?></h4>
+                        <h4><?= $Topic['descrip'].'&nbsp;<button data-postid="'.$Topic['idtopic'].'" data-likes="'.$Topic['like_count'].'" class="like">Like ('.$Topic['like_count'].')</button>'; ?></h4>
                         <p><?= $Topic['contenu']; ?></p>
+                        
                        
                        
                     </div>
@@ -310,6 +327,20 @@ $.post("forum.php",
 function(data, status){
     $(button).html("Like (" + ($(button).data('likes')+1) + ")")
     $(button).data('likes', $(button).data('likes')+1)
+});
+});
+</script>
+<script type="text/javascript">
+$(".view").click(function(){
+    let button = $(this)
+    let post_id = $(button).data('postid')
+$.post("forum.php",
+{
+    'view' : post_id
+},
+function(data, status){
+    $(button).html("view (" + ($(button).data('views')+1) + ")")
+    $(button).data('views', $(button).data('views')+1)
 });
 });
 </script>

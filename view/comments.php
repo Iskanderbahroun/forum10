@@ -36,6 +36,8 @@
     <link rel="stylesheet" href="../css/style6.css">
 
 
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css" integrity="sha512-KfkfwYDsLkIlwQp6LFnl8zNdLGxu9YAA1QvwINks4PhcElQSvqcyVLLD9aMhXd13uQjoXtEKNosOWaZqXgel0g==" crossorigin="anonymous" referrerpolicy="no-referrer" />
 
     <!-- ===============================================-->
     <!--    Stylesheets-->
@@ -78,12 +80,41 @@
 
 
 <br><br><br><br><br><br><br><br><br>
-<h1 class="heading"> <a href="ajoutercomment.php?id=<?php echo $id; ?>">Ajouter comment </a></h1>
+<h1 class="heading"> <a href="ajoutercomment.php?id=<?php echo $id; ?>">Ajouter comment </a></h1> 
+ <br> 
+<i class="fa-solid fa-eye"><?php
+
+$ip = fopen('last_ip.txt', 'c+');
+$check = fgets($ip);
+
+$file = fopen('counter.txt', 'c+');
+$count = intval(fgets($file));
+
+if($_SERVER['REMOTE_ADDR'] != $check)
+{
+	fclose($ip);
+	
+	$ip = fopen('last_ip.txt', 'w+');
+	
+	fputs($ip, $_SERVER['REMOTE_ADDR']);
+	
+	$count++;
+	fseek($file, 0);
+	fputs($file, $count);
+}
+
+fclose($file);
+fclose($ip);
+
+echo $count;?></i> 
+
 
 <div class="posts-table">
+<br>
             <div class="table-head">
+          
                 <div class="status">Status</div>
-                <div class="subjects">Subjects</div>
+                <div class="subjects"> Subjects</div>
 
             </div> <?php 
                                 $j=0;        
