@@ -80,23 +80,7 @@
 <input type="submit" name="submit">
 	
 </form>
-<?php
-?>
-<?php
-   require_once ('C:/xampp/htdocs/Forumm/view/PHP-MySQLi-Database-Class-master/MysqliDb.php');
 
-   $db = new MysqliDb ('localhost', 'root', '', 'forum');
-$topics = $db->get('topic');
-
-if (isset($_POST['view'])) {
-    $post_id = $_POST['view'];
-    $query = Array('view_count'=>$db->inc(1));
-    $db->where('idview', $post_id);
-    $db->update('topic', $query);
-
-    $db->insert('views', Array('post_id'=>$post_id));
-
-}?>
 
 
     
@@ -140,7 +124,7 @@ $topic = $db->get('topic');
 if (isset($_POST['like'])) {
  $post_id = $_POST['like'];
  $query = Array('like_count'=>$db->inc(1));
- $db->where('id', $post_id);
+ $db->where('idtopic', $post_id);
  $db->update('topic', $query);
 
  $db->insert('likes', Array('post_id'=>$post_id));
@@ -155,14 +139,14 @@ if (isset($_POST['like'])) {
                 
             <div class="subforum">
                 <div class="subforum-title">
-                    <h1><a href="comments.php?id=<?= $topic['idtopic']; ?>">Topic <?php echo $topic["titre"] .'&nbsp;<br><i class="fa-solid fa-eye" data-postid="'.$topic['idtopic'].'" data-likes="'.$topic['view_count'].'" class="view"> ('.$topic['view_count'].')</i>';  ?></a></h1>
+                    <h1><a href="comments.php?id=<?= $topic['idtopic']; ?>">Topic <?php echo $topic["titre"] .';<br><i class="fa-solid fa-eye" data-postid="'.$topic['idtopic'].'" data-likes="'.$topic['view_count'].'" class="view">  ('.$topic['view_count'].')</i>';  ?></a></h1>
                 </div>
                 <div class="subforum-row">
                     <div class="subforum-icon subforum-column center">
                     <i class="fas fa-comment"></i>
                     </div>
                     <div class="subforum-description subforum-column">
-                        <h4><?= $topic['descrip'].'&nbsp;<button data-postid="'.$topic['idtopic'].'" data-likes="'.$topic['like_count'].'" class="like">Like ('.$topic['like_count'].')</button>'; ?></h4>
+                        <h4><?php echo $topic["descrip"] .'&nbsp;<button data-postid="'.$topic['idtopic'].'" data-likes="'.$topic['like_count'].'" class="like">Like ('.$topic['like_count'].')</button><hr />'; ?></h4>
                         <p><?= $topic['contenu']; ?></p>
                         
                        
@@ -289,19 +273,17 @@ function(data, status){
     $(button).data('likes', $(button).data('likes')+1)
 });
 });
-</script>
 
-<script type="text/javascript">
 $(".view").click(function(){
-    let button = $(this)
-    let post_id = $(button).data('postid')
+    let i = $(this)
+    let post_id = $(i).data('postid')
 $.post("forum.php",
 {
     'view' : post_id
 },
 function(data, status){
-    $(button).html("view (" + ($(button).data('views')+1) + ")")
-    $(button).data('views', $(button).data('views')+1)
+    $(i).html("view (" + ($(i).data('views')+1) + ")")
+    $(i).data('views', $(i).data('views')+1)
 });
 });
 </script>

@@ -7,7 +7,23 @@
                           $CommentsC = new commentsC();
                             $Comments = $CommentsC->afficherTcomments($id);
                         ?>
+<?php
+   require_once '../Assets/Utils/config.php';
+   require_once '../Model/topic.php';
+   $requete = "UPDATE Topic SET view_count=view_count+1 where idtopic=:id";
+   $config = config::getConnexion();
+   
+       $querry = $config->prepare($requete);
+       $querry->execute(
+           [
+               'id'=>$id
+           ]
+       );
+      
+       
+   
 
+?>
 <html lang="en">
     
     

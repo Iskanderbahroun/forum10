@@ -5,7 +5,7 @@
         private $titre;
         private $descrip;
         private $contenu;
-
+		public $view_count=null;
 
 
         function __construct($titre, $descrip, $contenu){
